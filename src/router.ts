@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { HandlerFunction, METHOD, Method, RouteHandle } from './types/common';
-import { sendBadRequest, sendInternalServerError } from './helpers';
+import { sendBadRequest, sendInternalServerError } from './utils/responses';
 
 type RouterRoute = {
   originalRoute: string;
