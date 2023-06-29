@@ -1,8 +1,10 @@
 class BaseValidator {
   name: string;
+  input: unknown;
 
-  constructor(name: string) {
+  constructor(name: string, input: string | number | unknown | unknown[]) {
     this.name = name;
+    this.input = input;
   }
 
   protected invalidate(message = 'is invalid'): never {
@@ -13,30 +15,16 @@ class BaseValidator {
 export default class Validator extends BaseValidator {
   input: unknown;
 
-  constructor(name: string, input: unknown) {
-    super(name);
-    this.input = input;
-  }
-
-  isUUID() {
-    if (typeof this.input === 'string' || this.input instanceof String) {
-      if (this.input.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)) {
-        return this;
-      }
-    }
-    this.invalidate('should be proper UUID');
-  }
-
   isString() {
     if (typeof this.input === 'string' || this.input instanceof String) {
-      return this;
+      return new StringValidator(this.name, this.input.toString());
     }
     this.invalidate('should be string');
   }
 
   isNumber() {
     if (typeof this.input === 'number' || this.input instanceof Number) {
-      return this;
+      return new NumberValidator(this.name, this.input.valueOf());
     }
     this.invalidate('should be number');
   }
@@ -49,12 +37,34 @@ export default class Validator extends BaseValidator {
   }
 }
 
+class NumberValidator extends BaseValidator {
+  input: number;
+
+  constructor(name: string, input: number) {
+    super(name, input);
+  }
+}
+
+class StringValidator extends BaseValidator {
+  input: string;
+
+  constructor(name: string, input: string) {
+    super(name, input);
+  }
+
+  isUUID() {
+    if (this.input.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)) {
+      return this;
+    }
+    this.invalidate('should be proper UUID');
+  }
+}
+
 class ArrayValidator extends BaseValidator {
   input: unknown[];
 
   constructor(name: string, input: unknown[]) {
-    super(name);
-    this.input = input;
+    super(name, input);
   }
 
   ofStrings() {
