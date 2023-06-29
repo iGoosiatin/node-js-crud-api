@@ -10,6 +10,7 @@ export default class SimpleCrudServer {
 
   constructor(basePort: number) {
     this.basePort = basePort;
+
     this.server = createServer((req, res) => {
       res.setHeader('Content-Type', 'application/json');
       this.router.handle(req, res);
@@ -17,6 +18,6 @@ export default class SimpleCrudServer {
   }
 
   start() {
-    this.server.listen(this.basePort);
+    this.server.listen(this.basePort, () => console.log(`Server started on ${this.basePort}`));
   }
 }
