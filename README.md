@@ -8,6 +8,7 @@ Implemented simple CRUD API using in-memory database underneath.
 - Pull this repo
 - Make sure your node version is 18.16
 - Install required packages
+- Create `.env` and configure custom server port, if necessary
 ```
 npm install
 ```
@@ -22,5 +23,7 @@ npm run start:prod
 ```
 
 ## Environment variables
-Server port is configured via `.env`
-Configure custom port by setting `PORT={number}`
+Possible variables
+```
+PORT={number}
+```
