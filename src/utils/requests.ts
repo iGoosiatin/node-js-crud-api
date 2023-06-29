@@ -15,3 +15,14 @@ export const getParsedRequestData = <T>(req: IncomingMessage): Promise<T> => {
     });
   });
 };
+
+export const getParamFromUrl = (req: IncomingMessage): string => {
+  const { url } = req;
+  if (url) {
+    const param = url.split('/').pop();
+    if (param) {
+      return param;
+    }
+  }
+  throw new Error();
+};

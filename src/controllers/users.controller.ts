@@ -1,6 +1,6 @@
-import { getParsedRequestData } from '../utils/requests';
+import { getParamFromUrl, getParsedRequestData } from '../utils/requests';
 import UsersModel from '../models/users.model';
-import { sendSuccess } from '../utils/responses';
+import { sendNotFound, sendSuccess } from '../utils/responses';
 import { IncomingMessage, ServerResponse } from 'http';
 import { UserFromRequest } from '../types/users';
 
@@ -12,11 +12,21 @@ export const getUsers = async (_: IncomingMessage, res: ServerResponse) => {
 };
 
 export const getUser = async (req: IncomingMessage, res: ServerResponse) => {
-  sendSuccess(res, 'user');
+  const id = getParamFromUrl(req);
+
+  // TODO: validate id!
+  const user = await userModel.getUser(id);
+  if (user) {
+    sendSuccess(res, user);
+  } else {
+    sendNotFound(res, 'User does not exist');
+  }
 };
 
 export const createUser = async (req: IncomingMessage, res: ServerResponse) => {
   const newUserData = await getParsedRequestData<UserFromRequest>(req);
+
+  // TODO: validate data!
   const newUser = await userModel.createUser(newUserData);
   sendSuccess(res, newUser);
 };
