@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { HandlerFunction, METHOD, Method, RouteHandle } from './types/common';
-import { sendBadRequest, sendInternalServerError } from './utils/responses';
+import { sendBadRequest, sendNotFound } from './utils/responses';
 
 type RouterRoute = {
   originalRoute: string;
@@ -15,18 +15,19 @@ export default class Router {
     this._processRoutes(routes.flat());
   }
 
-  handle(req: IncomingMessage, res: ServerResponse) {
+  async handle(req: IncomingMessage, res: ServerResponse) {
     const { url, method } = req;
 
-    try {
-      const handler = this._findRouteHander(url, method);
-      if (handler) {
-        handler(req, res);
-      } else {
+    const handler = this._findRouteHander(url, method);
+
+    if (handler) {
+      try {
+        await handler(req, res);
+      } catch {
         sendBadRequest(res);
       }
-    } catch {
-      sendInternalServerError(res);
+    } else {
+      sendNotFound(res, 'Endpoint does not exist');
     }
   }
 

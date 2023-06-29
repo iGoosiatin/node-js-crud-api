@@ -6,9 +6,12 @@ export const getParsedRequestData = <T>(req: IncomingMessage): Promise<T> => {
     req.on('data', (chunk: Buffer) => (body += chunk.toString()));
     req.on('error', reject);
     req.on('end', () => {
-      // TODO: need to handle JSON.parse error
-      const parsedData = JSON.parse(body);
-      resolve(parsedData);
+      try {
+        const parsedData = JSON.parse(body);
+        resolve(parsedData);
+      } catch {
+        reject();
+      }
     });
   });
 };

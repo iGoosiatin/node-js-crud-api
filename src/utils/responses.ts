@@ -14,3 +14,8 @@ export const sendInternalServerError = (res: ServerResponse, message = 'Internal
   res.statusCode = 500;
   res.end(JSON.stringify({ message }));
 };
+
+export const sendNotFound = (res: ServerResponse, message: string) => {
+  res.statusCode = 404;
+  res.end(JSON.stringify({ message }));
+};
