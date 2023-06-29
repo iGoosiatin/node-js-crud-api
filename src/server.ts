@@ -5,6 +5,7 @@ import cluster from 'cluster';
 import Router from './router';
 import usersRouteHandlers from './routes/users.routes';
 import { createRoundRobin } from './utils/roundRobin';
+import { RequestOptions } from 'https';
 
 type SimpleCrudServerOptions = {
   cluster?: boolean;
@@ -50,11 +51,21 @@ export default class SimpleCrudServer {
   }
 
   private _createLoadBalancer = (req: IncomingMessage, res: ServerResponse) => {
-    const requestToWorker = request({
-      port: this.port + this.roundRobin(),
-    });
+    const port = this.port + this.roundRobin();
+    const { url: path, method } = req;
+    const options: RequestOptions = { port, path, method };
+
+    const workerCallback = (workerRes: IncomingMessage) => {
+      const { statusCode, headers } = workerRes;
+      res.statusCode = statusCode || 500;
+      Object.entries(headers).forEach(([key, value]) => {
+        value && res.setHeader(key, value);
+      });
+      workerRes.pipe(res);
+    };
+
+    const requestToWorker = request(options, workerCallback);
     req.pipe(requestToWorker);
-    res.end();
   };
 
   private _createWorker = (req: IncomingMessage, res: ServerResponse) => {
