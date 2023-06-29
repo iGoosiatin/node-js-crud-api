@@ -1,9 +1,11 @@
 import { ServerResponse } from 'http';
 
-export const sendSuccess = (res: ServerResponse, data?: unknown) => {
-  res.statusCode = 200;
-  res.end(JSON.stringify(data));
-};
+export const sendSuccess =
+  (statusCode = 200) =>
+  (res: ServerResponse, data?: unknown) => {
+    res.statusCode = statusCode;
+    res.end(JSON.stringify(data));
+  };
 
 export const sendBadRequest = (res: ServerResponse, message = 'Bad request') => {
   res.statusCode = 400;

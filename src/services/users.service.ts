@@ -1,6 +1,6 @@
 import InMemoryDatabase from '../db/database';
 
-export default class UsersModel {
+export default class UsersService {
   db = new InMemoryDatabase();
 
   async getUsers() {
@@ -16,5 +16,15 @@ export default class UsersModel {
   async createUser(username: string, age: number, hobbies: string[]) {
     const user = await this.db.create('users', { username, age, hobbies });
     return user;
+  }
+
+  async updateUser(id: string, username: string, age: number, hobbies: string[]) {
+    const user = await this.db.updateById('users', id, { username, age, hobbies });
+    return user;
+  }
+
+  async deleteUser(id: string) {
+    const result = await this.db.deleteById('users', id);
+    return result;
   }
 }
