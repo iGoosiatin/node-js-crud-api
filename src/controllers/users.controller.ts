@@ -1,8 +1,9 @@
 import { getParamFromUrl, getParsedRequestData } from '../utils/requests';
 import UsersModel from '../models/users.model';
-import { sendNotFound, sendSuccess } from '../utils/responses';
+import { sendBadRequest, sendNotFound, sendSuccess } from '../utils/responses';
 import { IncomingMessage, ServerResponse } from 'http';
 import { UserFromRequest } from '../types/users';
+import Validator from '../utils/validator';
 
 const userModel = new UsersModel();
 
@@ -14,7 +15,13 @@ export const getUsers = async (_: IncomingMessage, res: ServerResponse) => {
 export const getUser = async (req: IncomingMessage, res: ServerResponse) => {
   const id = getParamFromUrl(req);
 
-  // TODO: validate id!
+  try {
+    new Validator('id', id).isUUID();
+  } catch (error) {
+    sendBadRequest(res, `id ${(error as Error).message}`);
+    return;
+  }
+
   const user = await userModel.getUser(id);
   if (user) {
     sendSuccess(res, user);
@@ -24,9 +31,16 @@ export const getUser = async (req: IncomingMessage, res: ServerResponse) => {
 };
 
 export const createUser = async (req: IncomingMessage, res: ServerResponse) => {
-  const newUserData = await getParsedRequestData<UserFromRequest>(req);
+  const { username, age, hobbies } = await getParsedRequestData<UserFromRequest>(req);
 
-  // TODO: validate data!
-  const newUser = await userModel.createUser(newUserData);
+  try {
+    new Validator('username', username).isString();
+    new Validator('age', age).isNumber();
+    new Validator('hobbies', hobbies).isArray().ofStrings();
+  } catch (error) {
+    sendBadRequest(res, (error as Error).message);
+    return;
+  }
+  const newUser = await userModel.createUser(username, age, hobbies);
   sendSuccess(res, newUser);
 };

@@ -1,4 +1,3 @@
-import { UserFromRequest } from 'types/users';
 import InMemoryDatabase from '../db/database';
 
 export default class UsersModel {
@@ -14,8 +13,8 @@ export default class UsersModel {
     return user;
   }
 
-  async createUser(newUser: UserFromRequest) {
-    const user = await this.db.create('users', newUser);
+  async createUser(username: string, age: number, hobbies: string[]) {
+    const user = await this.db.create('users', { username, age, hobbies });
     return user;
   }
 }
