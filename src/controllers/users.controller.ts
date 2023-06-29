@@ -18,7 +18,7 @@ export const getUser = async (req: IncomingMessage, res: ServerResponse) => {
   try {
     new Validator('id', id).isString().isUUID();
   } catch (error) {
-    sendBadRequest(res, `id ${(error as Error).message}`);
+    sendBadRequest(res, (error as Error).message);
     return;
   }
 
