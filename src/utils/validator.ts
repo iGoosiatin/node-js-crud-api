@@ -1,10 +1,21 @@
-export default class Validator {
-  input: unknown;
+class BaseValidator {
   name: string;
 
-  constructor(name: string, input: unknown) {
-    this.input = input;
+  constructor(name: string) {
     this.name = name;
+  }
+
+  protected invalidate(message = 'is invalid'): never {
+    throw new Error(`${this.name} ${message}`);
+  }
+}
+
+export default class Validator extends BaseValidator {
+  input: unknown;
+
+  constructor(name: string, input: unknown) {
+    super(name);
+    this.input = input;
   }
 
   isUUID() {
@@ -13,44 +24,43 @@ export default class Validator {
         return this;
       }
     }
-    throw new Error(`${this.name} should be proper UUID`);
+    this.invalidate('should be proper UUID');
   }
 
   isString() {
     if (typeof this.input === 'string' || this.input instanceof String) {
       return this;
     }
-    throw new Error(`${this.name} should be string`);
+    this.invalidate('should be string');
   }
 
   isNumber() {
     if (typeof this.input === 'number' || this.input instanceof Number) {
       return this;
     }
-    throw new Error(`${this.name} should be number`);
+    this.invalidate('should be number');
   }
 
   isArray() {
     if (Array.isArray(this.input)) {
       return new ArrayValidator(this.name, this.input);
     }
-    throw new Error(`${this.name} should be array`);
+    this.invalidate('should be array');
   }
 }
 
-class ArrayValidator {
+class ArrayValidator extends BaseValidator {
   input: unknown[];
-  name: string;
 
   constructor(name: string, input: unknown[]) {
+    super(name);
     this.input = input;
-    this.name = name;
   }
 
   ofStrings() {
     if (this.input.every((element) => typeof element === 'string' || element instanceof String)) {
       return this;
     }
-    throw new Error(`${this.name} should contain only strings`);
+    this.invalidate('should contain only strings');
   }
 }
