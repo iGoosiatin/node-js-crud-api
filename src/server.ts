@@ -13,12 +13,12 @@ type SimpleCrudServerOptions = {
 };
 
 export default class SimpleCrudServer {
-  port: number;
+  private port: number;
   server: Server;
-  router = new Router([usersRouteHandlers]);
-  clusterMode = false;
-  clusterDb: IDatabase;
-  roundRobin: () => number;
+  private router = new Router([usersRouteHandlers]);
+  private clusterMode = false;
+  private clusterDb: IDatabase;
+  private roundRobin: () => number;
 
   constructor(port: number, options?: SimpleCrudServerOptions) {
     this.port = port;
