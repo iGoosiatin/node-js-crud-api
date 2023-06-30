@@ -40,7 +40,7 @@ describe('mixed path', () => {
     } = await supertest(server).put(`${API_URL}/${user.id}`).send(JSON.stringify(newDetails));
 
     expect(statusCode).toBe(400);
-    expect(message).toBe('age should be number');
+    expect(message).toBe('age is required');
   });
 
   test('User was not updated', async () => {

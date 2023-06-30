@@ -49,7 +49,7 @@ describe('fail path', () => {
     } = await supertest(server).post(API_URL).send(JSON.stringify(newIncompleteUser));
 
     expect(statusCode).toBe(400);
-    expect(message).toStrictEqual('username should be string');
+    expect(message).toStrictEqual('username is required');
   });
 
   test('User validation: detect missing prop "age"', async () => {
@@ -65,7 +65,7 @@ describe('fail path', () => {
     } = await supertest(server).post(API_URL).send(JSON.stringify(newIncompleteUser));
 
     expect(statusCode).toBe(400);
-    expect(message).toStrictEqual('age should be number');
+    expect(message).toStrictEqual('age is required');
   });
 
   test('User validation: detect missing prop "hobbies"', async () => {
@@ -81,7 +81,7 @@ describe('fail path', () => {
     } = await supertest(server).post(API_URL).send(JSON.stringify(newIncompleteUser));
 
     expect(statusCode).toBe(400);
-    expect(message).toStrictEqual('hobbies should be array');
+    expect(message).toStrictEqual('hobbies is required');
   });
 
   test('User validation: invalid username', async () => {
