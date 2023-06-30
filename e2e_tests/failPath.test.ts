@@ -20,7 +20,7 @@ describe('fail path', () => {
     const {
       statusCode,
       body: { message },
-    } = await supertest(server).post(API_URL);
+    } = await supertest(server).post(API_URL).send('');
 
     expect(statusCode).toBe(400);
     expect(message).toEqual('Bad request');
