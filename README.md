@@ -31,6 +31,11 @@ npm run start:prod
 npm run start:prod:cluster
 ```
 
+### Run E2E tests
+```
+npm run test
+```
+
 ## Environment variables
 Possible variables
 ```
