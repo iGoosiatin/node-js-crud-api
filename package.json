@@ -7,7 +7,9 @@
     "format": "prettier --write \"./**/*.ts\"",
     "lint": "eslint \"./**/*.ts\" --fix",
     "start:dev": "tsnd --respawn --transpile-only ./index.ts",
-    "start:prod": "tsc && node ./dist/index.js"
+    "start:dev:cluster": "tsnd --respawn --transpile-only ./index.ts --cluster",
+    "start:prod": "tsc && node ./dist/index.js",
+    "start:prod:cluster": "tsc && node ./dist/index.js --cluster"
   },
   "author": "Ilja Gusiatin",
   "license": "ISC",
