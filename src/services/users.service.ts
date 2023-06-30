@@ -18,8 +18,12 @@ export default class UsersService {
     return user;
   }
 
-  async updateUser(id: string, username: string, age: number, hobbies: string[]) {
-    const user = await this.db.updateById('users', id, { username, age, hobbies });
+  async updateUser(id: string, username?: string, age?: number, hobbies?: string[]) {
+    const user = await this.db.updateById('users', id, {
+      ...(username && { username }),
+      ...(age && { age }),
+      ...(hobbies && { hobbies }),
+    });
     return user;
   }
 

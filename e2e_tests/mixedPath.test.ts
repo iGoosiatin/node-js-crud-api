@@ -30,7 +30,7 @@ describe('mixed path', () => {
   test('Unsuccessful update', async () => {
     const newDetails = {
       username: 'test bot',
-      //age: 0,
+      age: '1',
       hobbies: ['hacking'],
     };
 
@@ -40,7 +40,7 @@ describe('mixed path', () => {
     } = await supertest(server).put(`${API_URL}/${user.id}`).send(JSON.stringify(newDetails));
 
     expect(statusCode).toBe(400);
-    expect(message).toBe('age is required');
+    expect(message).toBe('age should be number');
   });
 
   test('User was not updated', async () => {

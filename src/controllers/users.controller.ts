@@ -59,9 +59,13 @@ export const updateUser = async (req: IncomingMessage, res: ServerResponse) => {
     id = getParamFromUrl(req);
     reqData = await getParsedRequestData<UserFromRequest>(req);
     new Validator('id', id).isString().isUUID();
-    new Validator('username', reqData.username).isString();
-    new Validator('age', reqData.age).isNumber();
-    new Validator('hobbies', reqData.hobbies).isArray().ofStrings();
+    new Validator('username', reqData.username).isOptional().isString();
+    new Validator('age', reqData.age).isOptional().isNumber();
+    new Validator('hobbies', reqData.hobbies).isOptional().isArray().ofStrings();
+
+    if ([reqData.username, reqData.age, reqData.hobbies].every((prop) => prop === undefined)) {
+      throw new Error('Bad request');
+    }
   } catch (error) {
     sendBadRequest(res, (error as Error).message);
     return;

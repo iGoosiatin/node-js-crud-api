@@ -67,10 +67,11 @@ POST /api/users
 PUT /api/users/:id
 @params :id - UUID
 @body
+# At least one property should be provided
 {
-  username: string, required
-  age: number, required
-  hobbies: string[], required
+  username: string, optional
+  age: number, optional
+  hobbies: string[], optional
 }
 ```
 ### Delete user by ID
