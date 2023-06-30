@@ -4,14 +4,15 @@
 
 Implemented simple CRUD API using in-memory database underneath.
 
-## How to start
+## How to setup
 - Pull this repo
 - Make sure your node version is 18.16
 - Install required packages
-- Create `.env` and configure custom server port, if necessary
 ```
 npm install
 ```
+- Create `.env` and configure custom server port, if necessary. Otherwise, default port 4000 is set.
+
 ## How to use
 ### Start development
 ```
@@ -34,4 +35,41 @@ npm run start:prod:cluster
 Possible variables
 ```
 PORT={number}
+```
+
+## Endpoints
+### Get all users
+```
+GET /api/users
+```
+### Get user by ID
+```
+GET /api/users/:id
+@params :id - UUID
+```
+### Create user
+```
+POST /api/users
+@body
+{
+  username: string, required
+  age: number, required
+  hobbies: string[], required
+}
+```
+### Update user by ID
+```
+PUT /api/users/:id
+@params :id - UUID
+@body
+{
+  username: string, required
+  age: number, required
+  hobbies: string[], required
+}
+```
+### Delete user by ID
+```
+DELETE /api/users/:id
+@params :id - UUID
 ```
