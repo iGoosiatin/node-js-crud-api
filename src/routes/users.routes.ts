@@ -1,5 +1,5 @@
-import { RouteHandle, METHOD } from '../types/common';
 import { createUser, deleteUser, getUser, getUsers, updateUser } from '../controllers/users.controller';
+import { RouteHandle, METHOD } from '../types/common';
 
 const usersRouteHandlers: RouteHandle[] = [
   ['/api/users', METHOD.GET, getUsers],

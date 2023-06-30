@@ -1,11 +1,12 @@
-import { IncomingMessage, Server, ServerResponse, createServer, request } from 'http';
+import { IncomingMessage, RequestOptions, Server, ServerResponse, createServer, request } from 'http';
 import { availableParallelism } from 'os';
 import cluster from 'cluster';
 
 import Router from './router';
 import usersRouteHandlers from './routes/users.routes';
 import { createRoundRobin } from './utils/roundRobin';
-import { RequestOptions } from 'https';
+
+import Database, { DatabaseInquiryMessage, IDatabase } from './db';
 
 type SimpleCrudServerOptions = {
   cluster?: boolean;
@@ -16,13 +17,19 @@ export default class SimpleCrudServer {
   server: Server;
   router = new Router([usersRouteHandlers]);
   clusterMode = false;
-  roundRobin = createRoundRobin(availableParallelism() - 1);
+  clusterDb: IDatabase;
+  roundRobin: () => number;
 
   constructor(port: number, options?: SimpleCrudServerOptions) {
     this.port = port;
     this._parseOptions(options);
 
-    this.server = createServer(this.clusterMode && cluster.isPrimary ? this._createLoadBalancer : this._createWorker);
+    if (this.clusterMode) {
+      this.clusterDb = new Database();
+      this.roundRobin = createRoundRobin(availableParallelism() - 1);
+    }
+
+    this.server = createServer(this.clusterMode && cluster.isPrimary ? this._loadBalancerCb : this._serverCb);
   }
 
   start() {
@@ -34,7 +41,21 @@ export default class SimpleCrudServer {
       }
 
       for (let i = 1; i <= maxWorkers; i++) {
-        cluster.fork({ PORT: this.port + i });
+        const worker = cluster.fork({ PORT: this.port + i });
+
+        worker.on('message', async (message: DatabaseInquiryMessage) => {
+          if (message && message.dbCall) {
+            const {
+              dbCall: { handler, stringifiedArgs },
+            } = message;
+
+            const [arg1, arg2, arg3] = JSON.parse(stringifiedArgs);
+            const result = await this.clusterDb[handler](arg1, arg2, arg3);
+
+            const stringifiedResult = JSON.stringify(result);
+            worker.send(stringifiedResult);
+          }
+        });
       }
     }
 
@@ -50,7 +71,7 @@ export default class SimpleCrudServer {
     this.clusterMode = options.cluster || false;
   }
 
-  private _createLoadBalancer = (req: IncomingMessage, res: ServerResponse) => {
+  private _loadBalancerCb = (req: IncomingMessage, res: ServerResponse) => {
     const port = this.port + this.roundRobin();
     const { url: path, method, headers } = req;
     const options: RequestOptions = { port, path, method, headers };
@@ -68,7 +89,7 @@ export default class SimpleCrudServer {
     req.pipe(requestToWorker);
   };
 
-  private _createWorker = (req: IncomingMessage, res: ServerResponse) => {
+  private _serverCb = (req: IncomingMessage, res: ServerResponse) => {
     res.setHeader('Content-Type', 'application/json');
     cluster.isWorker && res.setHeader('Responder', `Worker-${cluster?.worker?.id}`);
     this.router.handle(req, res);

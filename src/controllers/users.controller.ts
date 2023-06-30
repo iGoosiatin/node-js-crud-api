@@ -1,9 +1,10 @@
 import { IncomingMessage, ServerResponse } from 'http';
 
-import { getParamFromUrl, getParsedRequestData } from '../utils/requests';
 import UsersModel from '../services/users.service';
-import { sendBadRequest, sendNotFound, sendSuccess } from '../utils/responses';
 import { UserFromRequest } from '../types/users';
+
+import { getParamFromUrl, getParsedRequestData } from '../utils/requests';
+import { sendBadRequest, sendNotFound, sendSuccess } from '../utils/responses';
 import Validator from '../utils/validator';
 
 const userModel = new UsersModel();

@@ -1,7 +1,7 @@
-import InMemoryDatabase from '../db/database';
+import Database from '../db';
 
 export default class UsersService {
-  db = new InMemoryDatabase();
+  db = new Database();
 
   async getUsers() {
     const users = await this.db.selectAll('users');
