@@ -17,9 +17,17 @@ npm install
 ```
 npm run start:dev
 ```
+### Start development in cluster mode
+```
+npm run start:dev:cluster
+```
 ### Start production
 ```
 npm run start:prod
+```
+### Start production in cluster mode
+```
+npm run start:prod:cluster
 ```
 
 ## Environment variables
