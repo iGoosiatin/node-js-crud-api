@@ -34,11 +34,16 @@ export default class Router {
 
   private _processRoutes(routes: RouteHandle[]) {
     routes.forEach(([originalRoute, method, routeHandler]) => {
-      const routeMethod = this.routeMap.get(method);
-      if (routeMethod) {
-        // TODO: chech if route already exists before push
+      const methodRoutes = this.routeMap.get(method);
+      if (methodRoutes) {
+        // Don't allow server to start if there is duplicate route
+        const duplicate = methodRoutes.find(({ originalRoute: existingRoute }) => existingRoute === originalRoute);
+        if (duplicate) {
+          throw new Error('Duplicate route detected');
+        }
+
         const routeMatcher = new RegExp(`^${originalRoute.replace(/:.*/, '.+')}$`);
-        routeMethod.push({ routeMatcher, routeHandler, originalRoute });
+        methodRoutes.push({ routeMatcher, routeHandler, originalRoute });
       }
     });
   }
