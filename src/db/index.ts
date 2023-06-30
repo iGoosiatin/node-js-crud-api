@@ -1,8 +1,8 @@
 import cluster from 'cluster';
 
+import InMemoryDatabase from './inMemoryDatabase';
 import ClusterDatabase, { DatabaseInquiryMessage } from './clusterDatabase';
 import { IDatabase } from './database';
-import InMemoryDatabase from './inMemoryDatabase';
 
 const Database = cluster.isPrimary ? InMemoryDatabase : ClusterDatabase;
 

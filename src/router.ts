@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 
 import { HandlerFunction, METHOD, Method, RouteHandle } from './types/common';
-import { sendBadRequest, sendNotFound } from './utils/responses';
+import { sendInternalServerError, sendNotFound } from './utils/responses';
 
 type RouterRoute = {
   originalRoute: string;
@@ -25,7 +25,7 @@ export default class Router {
       try {
         await handler(req, res);
       } catch {
-        sendBadRequest(res);
+        sendInternalServerError(res);
       }
     } else {
       sendNotFound(res, 'Endpoint does not exist');

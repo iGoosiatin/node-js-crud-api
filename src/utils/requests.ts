@@ -10,7 +10,7 @@ export const getParsedRequestData = <T>(req: IncomingMessage): Promise<T> => {
         const parsedData = JSON.parse(body);
         resolve(parsedData);
       } catch {
-        reject();
+        reject('');
       }
     });
   });
@@ -24,5 +24,5 @@ export const getParamFromUrl = (req: IncomingMessage): string => {
       return param;
     }
   }
-  throw new Error();
+  throw new Error('Unable to get param');
 };
