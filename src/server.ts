@@ -52,8 +52,8 @@ export default class SimpleCrudServer {
 
   private _createLoadBalancer = (req: IncomingMessage, res: ServerResponse) => {
     const port = this.port + this.roundRobin();
-    const { url: path, method } = req;
-    const options: RequestOptions = { port, path, method };
+    const { url: path, method, headers } = req;
+    const options: RequestOptions = { port, path, method, headers };
 
     const workerCallback = (workerRes: IncomingMessage) => {
       const { statusCode, headers } = workerRes;
