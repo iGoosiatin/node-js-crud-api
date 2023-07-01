@@ -1,6 +1,6 @@
 import supertest from 'supertest';
 import SimpleCrudServer from '../src/server';
-import { User } from 'types/users';
+import { User } from '../src/types/users';
 
 const { server } = new SimpleCrudServer(4000);
 const API_URL = '/api/users';
