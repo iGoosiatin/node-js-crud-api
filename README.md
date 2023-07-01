@@ -20,7 +20,7 @@ npm run start:dev
 ```
 ### Start development in cluster mode
 ```
-npm run start:dev:cluster
+npm run start:dev:multi
 ```
 ### Start production
 ```
@@ -28,7 +28,7 @@ npm run start:prod
 ```
 ### Start production in cluster mode
 ```
-npm run start:prod:cluster
+npm run start:prod:multi
 ```
 
 ### Run E2E tests
