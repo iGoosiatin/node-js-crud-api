@@ -1,7 +1,7 @@
 import supertest from 'supertest';
-import SimpleCrudServer from '../src/server';
+import ApiServer from '../src/apiServer';
 
-const { server } = new SimpleCrudServer(4000);
+const { server } = new ApiServer(4000);
 const API_URL = '/api/users';
 
 describe('success path', () => {
