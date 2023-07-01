@@ -1,4 +1,4 @@
-import { IncomingMessage, RequestOptions, Server, ServerResponse, createServer, request } from 'http';
+import { IncomingMessage, RequestOptions, Server, createServer, request } from 'http';
 import { availableParallelism } from 'os';
 
 import { createRoundRobin } from './utils/roundRobin';
@@ -13,7 +13,7 @@ export default class LoadBalancer implements Launchable {
     this.port = port;
     this.roundRobin = createRoundRobin(availableParallelism() - 1);
 
-    this.server = createServer((req: IncomingMessage, res: ServerResponse) => {
+    this.server = createServer((req, res) => {
       const port = this.port + this.roundRobin();
       const { url: path, method, headers } = req;
       const options: RequestOptions = { port, path, method, headers };

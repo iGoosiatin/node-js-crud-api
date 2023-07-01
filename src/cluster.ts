@@ -34,6 +34,7 @@ export default class ClusteredApiServer implements Launchable {
               dbCall: { handler, stringifiedArgs },
             } = message;
 
+            // TODO: refactor this stub for TS
             const [arg1, arg2, arg3] = JSON.parse(stringifiedArgs);
             const result = await this.clusterDb[handler](arg1, arg2, arg3);
 

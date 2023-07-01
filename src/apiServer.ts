@@ -1,4 +1,4 @@
-import { IncomingMessage, Server, ServerResponse, createServer } from 'http';
+import { Server, createServer } from 'http';
 import cluster from 'cluster';
 
 import Router from './router';
@@ -14,7 +14,7 @@ export default class ApiServer implements Launchable {
   constructor(port: number) {
     this.port = port;
 
-    this.server = createServer((req: IncomingMessage, res: ServerResponse) => {
+    this.server = createServer((req, res) => {
       res.setHeader('Content-Type', 'application/json');
       cluster.isWorker && res.setHeader('Responder', `Worker-${cluster?.worker?.id}`);
       this.router.handle(req, res);
