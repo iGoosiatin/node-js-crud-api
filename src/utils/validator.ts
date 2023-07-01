@@ -1,40 +1,31 @@
 class BaseValidator {
   name: string;
   input: unknown;
-  required = true;
   shouldSkip = false;
 
-  constructor(name: string, input: string | number | unknown | unknown[]) {
+  constructor(name: string, input: unknown, shouldSkip = false) {
     this.name = name;
     this.input = input;
+    this.shouldSkip = shouldSkip;
   }
 
-  protected _isOptional() {
-    this.required = false;
-    this.shouldSkip = this.input === undefined;
-  }
-
-  protected _ensure() {
-    if (this.required && this.input === undefined) {
-      this._invalidate(`is required`);
-    }
-  }
-
-  protected _invalidate(message = 'is invalid'): never {
+  protected invalidate(message = 'is invalid'): never {
     throw new Error(`${this.name} ${message}`);
   }
 }
 
 export default class Validator extends BaseValidator {
   input: unknown;
+  required = true;
 
   isOptional() {
-    this._isOptional();
+    this.required = false;
+    this.shouldSkip = this.input === undefined;
     return this;
   }
 
   isString() {
-    this._ensure();
+    this.ensure();
 
     if (this.shouldSkip) {
       return new StringValidator(this.name, '', this.shouldSkip);
@@ -43,11 +34,11 @@ export default class Validator extends BaseValidator {
     if (typeof this.input === 'string' || this.input instanceof String) {
       return new StringValidator(this.name, this.input.toString());
     }
-    this._invalidate('should be string');
+    this.invalidate('should be string');
   }
 
   isNumber() {
-    this._ensure();
+    this.ensure();
 
     if (this.shouldSkip) {
       return new NumberValidator(this.name, 0, this.shouldSkip);
@@ -56,11 +47,11 @@ export default class Validator extends BaseValidator {
     if (typeof this.input === 'number' || this.input instanceof Number) {
       return new NumberValidator(this.name, this.input.valueOf());
     }
-    this._invalidate('should be number');
+    this.invalidate('should be number');
   }
 
   isArray() {
-    this._ensure();
+    this.ensure();
 
     if (this.shouldSkip) {
       return new ArrayValidator(this.name, [], this.shouldSkip);
@@ -69,26 +60,22 @@ export default class Validator extends BaseValidator {
     if (Array.isArray(this.input)) {
       return new ArrayValidator(this.name, this.input);
     }
-    this._invalidate('should be array');
+    this.invalidate('should be array');
+  }
+
+  private ensure() {
+    if (this.required && this.input === undefined) {
+      this.invalidate(`is required`);
+    }
   }
 }
 
 class NumberValidator extends BaseValidator {
   input: number;
-
-  constructor(name: string, input: number, shouldSkip = false) {
-    super(name, input);
-    this.shouldSkip = shouldSkip;
-  }
 }
 
 class StringValidator extends BaseValidator {
   input: string;
-
-  constructor(name: string, input: string, shouldSkip = false) {
-    super(name, input);
-    this.shouldSkip = shouldSkip;
-  }
 
   isUUID() {
     if (this.shouldSkip) {
@@ -98,22 +85,17 @@ class StringValidator extends BaseValidator {
     if (this.input.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)) {
       return this;
     }
-    this._invalidate('should be proper UUID');
+    this.invalidate('should be proper UUID');
   }
 }
 
 class ArrayValidator extends BaseValidator {
   input: unknown[];
 
-  constructor(name: string, input: unknown[], shouldSkip = false) {
-    super(name, input);
-    this.shouldSkip = shouldSkip;
-  }
-
   ofStrings() {
     if (this.input.every((element) => typeof element === 'string' || element instanceof String)) {
       return this;
     }
-    this._invalidate('should contain only strings');
+    this.invalidate('should contain only strings');
   }
 }
