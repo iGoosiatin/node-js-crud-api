@@ -7,7 +7,7 @@ import { Launchable } from './types/common';
 
 export default class ApiServer implements Launchable {
   private port: number;
-  // server is non private for e2e tests
+  // server is non private for simplicity of e2e tests
   server: Server;
   private router = new Router([usersRouteHandlers]);
 
