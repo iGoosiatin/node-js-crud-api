@@ -93,9 +93,17 @@ class ArrayValidator extends BaseValidator {
   input: unknown[];
 
   ofStrings() {
+    if (this.shouldSkip) {
+      return new StringArrayValidator(this.name, this.input, this.shouldSkip);
+    }
+
     if (this.input.every((element) => typeof element === 'string' || element instanceof String)) {
-      return this;
+      return new StringArrayValidator(this.name, this.input);
     }
     this.invalidate('should contain only strings');
   }
+}
+
+class StringArrayValidator extends BaseValidator {
+  input: string[];
 }
