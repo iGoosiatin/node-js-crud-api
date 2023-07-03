@@ -53,7 +53,7 @@ export const createUser = async (req: IncomingMessage, res: ServerResponse) => {
 
 export const updateUser = async (req: IncomingMessage, res: ServerResponse) => {
   let id: string;
-  let reqData: User;
+  let reqData: Partial<User>;
 
   try {
     id = getParamFromUrl(req);

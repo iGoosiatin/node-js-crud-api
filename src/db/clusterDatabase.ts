@@ -2,7 +2,7 @@ import { withId } from '../types/common';
 import { IDatabase, DatabaseMethod, sourceType } from './database';
 
 export default class ClusterDatabase implements IDatabase {
-  async selectAll<T>(source: sourceType): Promise<T[]> {
+  async selectAll<T>(source: sourceType): Promise<withId<T>[]> {
     const stringifiedArgs = JSON.stringify([source]);
     const message = new DatabaseInquiryMessage('selectAll', stringifiedArgs);
 
@@ -12,7 +12,7 @@ export default class ClusterDatabase implements IDatabase {
     });
   }
 
-  async selectOneById<T>(source: sourceType, id: string): Promise<T | null> {
+  async selectOneById<T>(source: sourceType, id: string): Promise<withId<T> | null> {
     const stringifiedArgs = JSON.stringify([source, id]);
     const message = new DatabaseInquiryMessage('selectOneById', stringifiedArgs);
 
@@ -32,7 +32,7 @@ export default class ClusterDatabase implements IDatabase {
     });
   }
 
-  async updateById<T>(source: sourceType, id: string, data: T): Promise<withId<T> | null> {
+  async updateById<T>(source: sourceType, id: string, data: Partial<T>): Promise<withId<T> | null> {
     const stringifiedArgs = JSON.stringify([source, id, data]);
     const message = new DatabaseInquiryMessage('updateById', stringifiedArgs);
 

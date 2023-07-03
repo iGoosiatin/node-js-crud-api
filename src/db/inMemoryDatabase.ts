@@ -11,13 +11,13 @@ type sourceDataType = {
 export default class InMemoryDatabase implements IDatabase {
   private sourceData: sourceDataType = { users: USERS };
 
-  async selectAll<T>(source: sourceType): Promise<T[]> {
+  async selectAll<T>(source: sourceType): Promise<withId<T>[]> {
     const itemsArray = this.sourceData[source];
 
-    return itemsArray as T[];
+    return itemsArray as withId<T>[];
   }
 
-  async selectOneById<T>(source: sourceType, id: string) {
+  async selectOneById<T>(source: sourceType, id: string): Promise<withId<T> | null> {
     const itemsArray = this.sourceData[source];
     const item = itemsArray.find((item: { id: string }) => item.id === id);
 
@@ -31,15 +31,15 @@ export default class InMemoryDatabase implements IDatabase {
     return newItem;
   }
 
-  async updateById<T>(source: sourceType, id: string, data: T): Promise<withId<T> | null> {
-    const item = await this.selectOneById(source, id);
+  async updateById<T>(source: sourceType, id: string, data: Partial<T>): Promise<withId<T> | null> {
+    const item = await this.selectOneById<T>(source, id);
     if (!item) {
       return null;
     }
 
     const updatedItem = { ...item, ...data };
     this.sourceData[source] = this.sourceData[source].map((item) => (item.id === id ? updatedItem : item));
-    return updatedItem as withId<T>;
+    return updatedItem;
   }
 
   async deleteById(source: sourceType, id: string): Promise<true | null> {
