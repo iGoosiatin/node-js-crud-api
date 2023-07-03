@@ -5,6 +5,7 @@ import Database, { DatabaseInquiryMessage } from './db';
 import { Launchable } from './types/common';
 import LoadBalancer from './loadBalancer';
 import ApiServer from './apiServer';
+import { sourceType } from './db/database';
 
 export default class ClusteredApiServer implements Launchable {
   private port: number;
@@ -34,9 +35,8 @@ export default class ClusteredApiServer implements Launchable {
               dbCall: { handler, stringifiedArgs },
             } = message;
 
-            // TODO: refactor this stub for TS
-            const [arg1, arg2, arg3] = JSON.parse(stringifiedArgs);
-            const result = await this.clusterDb[handler](arg1, arg2, arg3);
+            const [sourceType, arg1, arg2] = JSON.parse(stringifiedArgs);
+            const result = await this.clusterDb[handler](sourceType, arg1, arg2);
 
             const stringifiedResult = JSON.stringify(result);
             worker.send(stringifiedResult);
