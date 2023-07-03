@@ -1,12 +1,13 @@
 import supertest from 'supertest';
 import ApiServer from '../src/apiServer';
 import { User } from '../src/types/users';
+import { withId } from '../src/types/common';
 
 const { server } = new ApiServer(4000);
 const API_URL = '/api/users';
 
 describe('mixed path', () => {
-  let user: User;
+  let user: withId<User>;
 
   test('Creation of user', async () => {
     const newUser = {
