@@ -1,7 +1,8 @@
+import { withId } from '../types/common';
 import { IDatabase, DatabaseMethod, sourceType } from './database';
 
 export default class ClusterDatabase implements IDatabase {
-  async selectAll(source: sourceType): Promise<unknown[]> {
+  async selectAll<T>(source: sourceType): Promise<T[]> {
     const stringifiedArgs = JSON.stringify([source]);
     const message = new DatabaseInquiryMessage('selectAll', stringifiedArgs);
 
@@ -11,7 +12,7 @@ export default class ClusterDatabase implements IDatabase {
     });
   }
 
-  async selectOneById(source: sourceType, id: string): Promise<unknown> {
+  async selectOneById<T>(source: sourceType, id: string): Promise<T | null> {
     const stringifiedArgs = JSON.stringify([source, id]);
     const message = new DatabaseInquiryMessage('selectOneById', stringifiedArgs);
 
@@ -21,7 +22,7 @@ export default class ClusterDatabase implements IDatabase {
     });
   }
 
-  async create(source: sourceType, data: any): Promise<unknown> {
+  async create<T>(source: sourceType, data: T): Promise<withId<T>> {
     const stringifiedArgs = JSON.stringify([source, data]);
     const message = new DatabaseInquiryMessage('create', stringifiedArgs);
 
@@ -31,7 +32,7 @@ export default class ClusterDatabase implements IDatabase {
     });
   }
 
-  async updateById(source: sourceType, id: string, data: any): Promise<unknown> {
+  async updateById<T>(source: sourceType, id: string, data: T): Promise<withId<T> | null> {
     const stringifiedArgs = JSON.stringify([source, id, data]);
     const message = new DatabaseInquiryMessage('updateById', stringifiedArgs);
 

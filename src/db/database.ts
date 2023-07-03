@@ -1,10 +1,12 @@
+import { withId } from '../types/common';
+
 export type sourceType = 'users';
 
 export interface IDatabase {
-  selectAll(source: sourceType): Promise<unknown[]>;
-  selectOneById(source: sourceType, id: string): Promise<unknown>;
-  create(source: sourceType, data: any): Promise<unknown>;
-  updateById(source: sourceType, id: string, data: any): Promise<unknown | null>;
+  selectAll<T>(source: sourceType): Promise<T[]>;
+  selectOneById<T>(source: sourceType, id: string): Promise<T | null>;
+  create<T>(source: sourceType, data: T): Promise<withId<T>>;
+  updateById<T>(source: sourceType, id: string, data: T): Promise<withId<T> | null>;
   deleteById(source: sourceType, id: string): Promise<true | null>;
 }
 

@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 
 import UsersService from '../services/users.service';
-import { UserFromRequest } from '../types/users';
+import { User } from '../types/users';
 
 import { getParamFromUrl, getParsedRequestData } from '../utils/requests';
 import { sendBadRequest, sendNotFound, sendSuccess } from '../utils/responses';
@@ -35,10 +35,10 @@ export const getUser = async (req: IncomingMessage, res: ServerResponse) => {
 };
 
 export const createUser = async (req: IncomingMessage, res: ServerResponse) => {
-  let reqData: UserFromRequest;
+  let reqData: User;
 
   try {
-    reqData = await getParsedRequestData<UserFromRequest>(req);
+    reqData = await getParsedRequestData<User>(req);
     new Validator('username', reqData.username).isString();
     new Validator('age', reqData.age).isNumber();
     new Validator('hobbies', reqData.hobbies).isArray().ofStrings();
@@ -53,11 +53,11 @@ export const createUser = async (req: IncomingMessage, res: ServerResponse) => {
 
 export const updateUser = async (req: IncomingMessage, res: ServerResponse) => {
   let id: string;
-  let reqData: UserFromRequest;
+  let reqData: User;
 
   try {
     id = getParamFromUrl(req);
-    reqData = await getParsedRequestData<UserFromRequest>(req);
+    reqData = await getParsedRequestData<User>(req);
     new Validator('id', id).isString().isUUID();
     new Validator('username', reqData.username).isOptional().isString();
     new Validator('age', reqData.age).isOptional().isNumber();

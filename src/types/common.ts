@@ -16,3 +16,9 @@ export type RouteHandle = [string, Method, HandlerFunction];
 export interface Launchable {
   start(): void;
 }
+
+export type idType = {
+  id: string;
+};
+
+export type withId<T> = T & idType;
